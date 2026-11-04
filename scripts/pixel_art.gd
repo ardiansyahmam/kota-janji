@@ -17,14 +17,17 @@ const PALETTE := {
 static func texture_from_map(rows: Array, px: int = 8) -> ImageTexture:
 	var h := rows.size()
 	var w := String(rows[0]).length()
-	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var img := Image.create(w * px, h * px, false, Image.FORMAT_RGBA8)
 	for y in h:
 		var row := String(rows[y])
 		for x in w:
 			var ch := row[x]
 			if ch == ".":
 				continue
-			img.set_pixel(x, y, PALETTE.get(ch, Color.WHITE))
+			var col: Color = PALETTE.get(ch, Color.WHITE)
+			for dy in px:
+				for dx in px:
+					img.set_pixel(x * px + dx, y * px + dy, col)
 	var tex := ImageTexture.create_from_image(img)
 	return tex
 
