@@ -25,6 +25,7 @@ var darkness_overlay: ColorRect
 var haze_overlay: ColorRect
 var font_title: Font
 var font_body: Font
+var ui_layer: CanvasLayer
 var complete_title: Label
 var complete_stats: Label
 var complete_next: Button
@@ -72,7 +73,7 @@ func _bg(parent: Control) -> void:
 	r.color = BG
 	parent.add_child(r)
 
-func _label(parent: Control, text: String, size: int, color: Color, x: float, y: float, title_font := false, w: float = 0.0) -> Label:
+func _label(parent: Node, text: String, size: int, color: Color, x: float, y: float, title_font := false, w: float = 0.0) -> Label:
 	var l := Label.new()
 	l.text = text
 	l.position = Vector2(x, y)
@@ -121,6 +122,8 @@ func _screen(name: String) -> Control:
 func _show(name: String) -> void:
 	for k in screens:
 		screens[k].visible = (k == name)
+	if ui_layer != null:
+		ui_layer.visible = (name == "game")
 
 func _build_screens() -> void:
 	# LOADING
@@ -154,32 +157,43 @@ func _build_screens() -> void:
 	_bg(s)
 	game_holder = Node2D.new()
 	s.add_child(game_holder)
-	hud_hearts = _label(s, "♥♥♥", 26, RED, 16, 14)
-	hud_coins = _label(s, "KOIN 0", 22, CREAM, 200, 18)
-	hud_req = _label(s, "", 22, YELLOW, 16, 48)
-	hud_timer = _label(s, "00:00", 22, CREAM, 300, 48)
+	ui_layer = CanvasLayer.new()
+	ui_layer.layer = 10
+	add_child(ui_layer)
+	hud_hearts = _label(ui_layer, "NYAWA 3", 26, RED, 16, 14)
+	hud_coins = _label(ui_layer, "KOIN 0", 22, CREAM, 200, 18)
+	hud_req = _label(ui_layer, "", 22, YELLOW, 16, 48)
+	hud_timer = _label(ui_layer, "00:00", 22, CREAM, 300, 48)
+	hud_timer.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	hud_timer.offset_left = -110
+	hud_timer.offset_top = 48
+	hud_timer.offset_right = -16
+	hud_timer.offset_bottom = 70
 	var pause_btn := Button.new()
 	pause_btn.text = "II"
-	pause_btn.position = Vector2(330, 14)
-	pause_btn.size = Vector2(44, 44)
+	pause_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	pause_btn.offset_left = -60
+	pause_btn.offset_top = 14
+	pause_btn.offset_right = -16
+	pause_btn.offset_bottom = 58
 	pause_btn.pressed.connect(_open_pause)
-	s.add_child(pause_btn)
-	hud_hint = _label(s, "", 22, YELLOW, 45, 100, false, 300)
+	ui_layer.add_child(pause_btn)
+	hud_hint = _label(ui_layer, "", 22, YELLOW, 45, 100, false, 300)
 	hud_hint.visible = false
 	darkness_overlay = ColorRect.new()
 	darkness_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	darkness_overlay.color = Color(0, 0, 0, 0)
 	darkness_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	s.add_child(darkness_overlay)
+	ui_layer.add_child(darkness_overlay)
 	haze_overlay = ColorRect.new()
 	haze_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	haze_overlay.color = Color(0.85, 0.70, 0.30, 0)
 	haze_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	s.add_child(haze_overlay)
-	_touch_button(s, "◀", 16, 736, func(): _touch_dir(-1), func(): _touch_dir(0))
-	_touch_button(s, "▶", 100, 736, func(): _touch_dir(1), func(): _touch_dir(0))
-	_touch_button(s, "DASH", 214, 736, func(): _touch_dash(), func(): pass)
-	_touch_button(s, "LOMPAT", 298, 736, func(): _touch_jump(), func(): pass)
+	ui_layer.add_child(haze_overlay)
+	_touch_button(ui_layer, "◀", Control.PRESET_BOTTOM_LEFT, 16, 92, func(): _touch_dir(-1), func(): _touch_dir(0))
+	_touch_button(ui_layer, "▶", Control.PRESET_BOTTOM_LEFT, 100, 176, func(): _touch_dir(1), func(): _touch_dir(0))
+	_touch_button(ui_layer, "DASH", Control.PRESET_BOTTOM_RIGHT, -176, -100, func(): _touch_dash(), func(): pass)
+	_touch_button(ui_layer, "LOMPAT", Control.PRESET_BOTTOM_RIGHT, -92, -16, func(): _touch_jump(), func(): pass)
 	# PAUSE
 	s = _screen("pause")
 	_set_always(s)
@@ -232,11 +246,14 @@ func _settings_row(parent: Control, y: float, label_text: String, key: String) -
 	)
 	parent.add_child(b)
 
-func _touch_button(parent: Control, text: String, x: float, y: float, down_cb: Callable, up_cb: Callable) -> void:
+func _touch_button(parent: Node, text: String, preset: int, off_l: float, off_r: float, down_cb: Callable, up_cb: Callable) -> void:
 	var b := Button.new()
 	b.text = text
-	b.position = Vector2(x, y)
-	b.size = Vector2(76, 76)
+	b.set_anchors_preset(preset)
+	b.offset_left = off_l
+	b.offset_top = -92
+	b.offset_right = off_r
+	b.offset_bottom = -16
 	b.add_theme_font_size_override("font_size", 26)
 	if font_body != null:
 		b.add_theme_font_override("font", font_body)
@@ -302,7 +319,7 @@ func _start_level(n: int) -> void:
 
 func _update_hearts(h: int) -> void:
 	if hud_hearts != null:
-		hud_hearts.text = "♥".repeat(h) + "♡".repeat(max(0, 3 - h))
+		hud_hearts.text = "NYAWA %d" % h
 
 func _on_collected(kind: String, total: int) -> void:
 	_update_hud()
