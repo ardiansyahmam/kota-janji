@@ -1,7 +1,7 @@
 # KOTA JANJI — Petualangan Anggaran
 
 Platformer retro 8-bit satir fiksi. Dibangun mengikuti spec
-`Super_Prompt_Kota_Janji.md` dan desain Figma "Game Adventure Satir Sumsel".
+`Super_Prompt_Kota_Janji.md` dan desain Figma "Game Adventure tentang kota fiksi yang pemerintah daerahnya sangat buruk!".
 
 ## Cara main (Godot 4.3)
 
