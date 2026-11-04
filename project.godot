@@ -1,0 +1,17 @@
+; Engine configuration file.
+config_version=5
+
+[application]
+config/name="KOTA JANJI — Petualangan Anggaran"
+config/description="Platformer retro 8-bit satir fiksi. Gratis, offline, tanpa iklan."
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.3")
+
+[display]
+window/size/viewport_width=390
+window/size/viewport_height=844
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[rendering]
+renderer/rendering_method="mobile"
