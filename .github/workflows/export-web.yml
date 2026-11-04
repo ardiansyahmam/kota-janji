@@ -31,7 +31,7 @@ jobs:
           mv ~/.local/share/godot/export_templates/4.3.stable/templates/* ~/.local/share/godot/export_templates/4.3.stable/
           chmod +x /tmp/godot/Godot_v4.3-stable_linux.x86_64
       - name: Ekspor Web (HTML5)
-        run: /tmp/godot/Godot_v4.3-stable_linux.x86_64 --headless --path . --export-release "Web" dist/index.html
+        run: mkdir -p dist && /tmp/godot/Godot_v4.3-stable_linux.x86_64 --headless --path . --export-release "Web" dist/index.html
       - name: Unggah artifact Pages
         uses: actions/upload-pages-artifact@v3
         with:
