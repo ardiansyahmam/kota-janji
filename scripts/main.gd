@@ -67,7 +67,7 @@ func _load_fonts() -> void:
 	if ResourceLoader.exists("res://assets/fonts/VT323-Regular.ttf"):
 		font_body = load("res://assets/fonts/VT323-Regular.ttf")
 
-func _bg(parent: Control) -> void:
+func _bg(parent: Node) -> void:
 	var r := ColorRect.new()
 	r.set_anchors_preset(Control.PRESET_FULL_RECT)
 	r.color = BG
@@ -154,12 +154,13 @@ func _build_screens() -> void:
 	_label(s, "Satir fiksi — tokoh & instansi dalam game ini rekaan.", 18, DIM, 45, 710, false, 300)
 	# GAME
 	s = _screen("game")
-	_bg(s)
 	game_holder = Node2D.new()
 	s.add_child(game_holder)
 	ui_layer = CanvasLayer.new()
 	ui_layer.layer = 10
+	ui_layer.follow_viewport_enabled = false
 	add_child(ui_layer)
+	_bg(ui_layer)
 	hud_hearts = _label(ui_layer, "NYAWA 3", 26, RED, 16, 14)
 	hud_coins = _label(ui_layer, "KOIN 0", 22, CREAM, 200, 18)
 	hud_req = _label(ui_layer, "", 22, YELLOW, 16, 48)
@@ -267,6 +268,7 @@ func _touch_button(parent: Node, text: String, preset: int, off_l: float, off_r:
 	b.add_theme_stylebox_override("normal", sb)
 	b.add_theme_stylebox_override("pressed", sb)
 	b.add_theme_color_override("font_color", BG)
+	b.modulate = Color(1, 1, 1, 0.75)
 	b.button_down.connect(down_cb)
 	b.button_up.connect(up_cb)
 	parent.add_child(b)
