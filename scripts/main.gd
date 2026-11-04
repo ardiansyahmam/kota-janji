@@ -26,6 +26,7 @@ var haze_overlay: ColorRect
 var font_title: Font
 var font_body: Font
 var ui_layer: CanvasLayer
+var bg_layer: CanvasLayer
 var complete_title: Label
 var complete_stats: Label
 var complete_next: Button
@@ -124,6 +125,8 @@ func _show(name: String) -> void:
 		screens[k].visible = (k == name)
 	if ui_layer != null:
 		ui_layer.visible = (name == "game")
+	if bg_layer != null:
+		bg_layer.visible = (name == "game")
 
 func _build_screens() -> void:
 	# LOADING
@@ -152,6 +155,7 @@ func _build_screens() -> void:
 	_button(s, "LANJUTKAN", 45, 564, func(): _start_level(int(save_data.get("unlocked_level", 1))), PANEL, CREAM)
 	_button(s, "PENGATURAN", 45, 628, func(): _show("settings"), PANEL, CREAM)
 	_label(s, "Satir fiksi — tokoh & instansi dalam game ini rekaan.", 18, DIM, 45, 710, false, 300)
+	_label(s, "BUILD 20261104-8", 16, DIM, 45, 800)
 	# GAME
 	s = _screen("game")
 	game_holder = Node2D.new()
@@ -160,7 +164,11 @@ func _build_screens() -> void:
 	ui_layer.layer = 10
 	ui_layer.follow_viewport_enabled = false
 	add_child(ui_layer)
-	_bg(ui_layer)
+	bg_layer = CanvasLayer.new()
+	bg_layer.layer = -1
+	bg_layer.follow_viewport_enabled = false
+	add_child(bg_layer)
+	_bg(bg_layer)
 	hud_hearts = _label(ui_layer, "NYAWA 3", 26, RED, 16, 14)
 	hud_coins = _label(ui_layer, "KOIN 0", 22, CREAM, 200, 18)
 	hud_req = _label(ui_layer, "", 22, YELLOW, 16, 48)
