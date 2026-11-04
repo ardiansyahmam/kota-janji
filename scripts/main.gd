@@ -27,6 +27,8 @@ var font_title: Font
 var font_body: Font
 var ui_layer: CanvasLayer
 var bg_layer: CanvasLayer
+var _left_held := false
+var _right_held := false
 var complete_title: Label
 var complete_stats: Label
 var complete_next: Button
@@ -127,6 +129,11 @@ func _show(name: String) -> void:
 		ui_layer.visible = (name == "game")
 	if bg_layer != null:
 		bg_layer.visible = (name == "game")
+	if name != "game":
+		_left_held = false
+		_right_held = false
+		if player != null:
+			player.touch_dir = 0
 
 func _build_screens() -> void:
 	# LOADING
@@ -199,8 +206,8 @@ func _build_screens() -> void:
 	haze_overlay.color = Color(0.85, 0.70, 0.30, 0)
 	haze_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_layer.add_child(haze_overlay)
-	_touch_button(ui_layer, "KIRI", Control.PRESET_BOTTOM_LEFT, 16, 92, func(): _touch_dir(-1), func(): _touch_dir(0))
-	_touch_button(ui_layer, "KANAN", Control.PRESET_BOTTOM_LEFT, 100, 176, func(): _touch_dir(1), func(): _touch_dir(0))
+	_touch_button(ui_layer, "KIRI", Control.PRESET_BOTTOM_LEFT, 16, 92, func(): _touch_dir_button(-1, true), func(): _touch_dir_button(-1, false))
+	_touch_button(ui_layer, "KANAN", Control.PRESET_BOTTOM_LEFT, 100, 176, func(): _touch_dir_button(1, true), func(): _touch_dir_button(1, false))
 	_touch_button(ui_layer, "DASH", Control.PRESET_BOTTOM_RIGHT, -176, -100, func(): _touch_dash(), func(): pass)
 	_touch_button(ui_layer, "LOMPAT", Control.PRESET_BOTTOM_RIGHT, -92, -16, func(): _touch_jump(), func(): pass)
 	# PAUSE
@@ -288,7 +295,16 @@ func _touch_button(parent: Node, text: String, preset: int, off_l: float, off_r:
 	b.button_up.connect(up_cb)
 	parent.add_child(b)
 
-func _touch_dir(d: int) -> void:
+func _touch_dir_button(dir: int, held: bool) -> void:
+	if dir < 0:
+		_left_held = held
+	else:
+		_right_held = held
+	var d := 0
+	if _right_held:
+		d += 1
+	if _left_held:
+		d -= 1
 	if player != null:
 		player.touch_dir = d
 
