@@ -191,8 +191,8 @@ func _build_screens() -> void:
 	haze_overlay.color = Color(0.85, 0.70, 0.30, 0)
 	haze_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_layer.add_child(haze_overlay)
-	_touch_button(ui_layer, "◀", Control.PRESET_BOTTOM_LEFT, 16, 92, func(): _touch_dir(-1), func(): _touch_dir(0))
-	_touch_button(ui_layer, "▶", Control.PRESET_BOTTOM_LEFT, 100, 176, func(): _touch_dir(1), func(): _touch_dir(0))
+	_touch_button(ui_layer, "KIRI", Control.PRESET_BOTTOM_LEFT, 16, 92, func(): _touch_dir(-1), func(): _touch_dir(0))
+	_touch_button(ui_layer, "KANAN", Control.PRESET_BOTTOM_LEFT, 100, 176, func(): _touch_dir(1), func(): _touch_dir(0))
 	_touch_button(ui_layer, "DASH", Control.PRESET_BOTTOM_RIGHT, -176, -100, func(): _touch_dash(), func(): pass)
 	_touch_button(ui_layer, "LOMPAT", Control.PRESET_BOTTOM_RIGHT, -92, -16, func(): _touch_jump(), func(): pass)
 	# PAUSE
@@ -267,7 +267,14 @@ func _touch_button(parent: Node, text: String, preset: int, off_l: float, off_r:
 	sb.border_width_bottom = 2
 	b.add_theme_stylebox_override("normal", sb)
 	b.add_theme_stylebox_override("pressed", sb)
+	b.add_theme_stylebox_override("hover", sb)
+	b.add_theme_stylebox_override("focus", sb)
+	b.add_theme_stylebox_override("disabled", sb)
 	b.add_theme_color_override("font_color", BG)
+	b.add_theme_color_override("font_pressed_color", BG)
+	b.add_theme_color_override("font_hover_color", BG)
+	b.add_theme_color_override("font_focus_color", BG)
+	b.add_theme_color_override("font_disabled_color", BG)
 	b.modulate = Color(1, 1, 1, 0.75)
 	b.button_down.connect(down_cb)
 	b.button_up.connect(up_cb)
