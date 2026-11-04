@@ -85,6 +85,7 @@ func _label(parent: Control, text: String, size: int, color: Color, x: float, y:
 	if w > 0:
 		l.size = Vector2(w, 0)
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(l)
 	return l
 
@@ -93,7 +94,7 @@ func _button(parent: Control, text: String, x: float, y: float, cb: Callable, fi
 	b.text = text
 	b.position = Vector2(x, y)
 	b.size = Vector2(300, 52)
-	b.add_theme_font_size_override("font_size", 18)
+	b.add_theme_font_size_override("font_size", 14)
 	if font_title != null:
 		b.add_theme_font_override("font", font_title)
 	var sb := StyleBoxFlat.new()
@@ -135,7 +136,7 @@ func _build_screens() -> void:
 	_bg(s)
 	_label(s, "KOTA", 56, YELLOW, 95, 150, true)
 	_label(s, "JANJI", 56, CREAM, 85, 220, true)
-	_label(s, "PETUALANGAN ANGGARAN", 22, GREEN, 45, 300, true)
+	_label(s, "PETUALANGAN ANGGARAN", 20, GREEN, 15, 300, true, 360)
 	var card := ColorRect.new()
 	card.position = Vector2(45, 380)
 	card.size = Vector2(300, 90)
@@ -175,10 +176,10 @@ func _build_screens() -> void:
 	haze_overlay.color = Color(0.85, 0.70, 0.30, 0)
 	haze_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	s.add_child(haze_overlay)
-	_touch_button(s, "◀", 20, 740, func(): _touch_dir(-1), func(): _touch_dir(0))
-	_touch_button(s, "▶", 90, 740, func(): _touch_dir(1), func(): _touch_dir(0))
-	_touch_button(s, "DASH", 210, 740, func(): _touch_dash(), func(): pass)
-	_touch_button(s, "LOMPAT", 285, 740, func(): _touch_jump(), func(): pass)
+	_touch_button(s, "◀", 16, 736, func(): _touch_dir(-1), func(): _touch_dir(0))
+	_touch_button(s, "▶", 100, 736, func(): _touch_dir(1), func(): _touch_dir(0))
+	_touch_button(s, "DASH", 214, 736, func(): _touch_dash(), func(): pass)
+	_touch_button(s, "LOMPAT", 298, 736, func(): _touch_jump(), func(): pass)
 	# PAUSE
 	s = _screen("pause")
 	_set_always(s)
@@ -235,7 +236,20 @@ func _touch_button(parent: Control, text: String, x: float, y: float, down_cb: C
 	var b := Button.new()
 	b.text = text
 	b.position = Vector2(x, y)
-	b.size = Vector2(64, 64)
+	b.size = Vector2(76, 76)
+	b.add_theme_font_size_override("font_size", 26)
+	if font_body != null:
+		b.add_theme_font_override("font", font_body)
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = YELLOW
+	sb.border_color = CREAM
+	sb.border_width_left = 2
+	sb.border_width_right = 2
+	sb.border_width_top = 2
+	sb.border_width_bottom = 2
+	b.add_theme_stylebox_override("normal", sb)
+	b.add_theme_stylebox_override("pressed", sb)
+	b.add_theme_color_override("font_color", BG)
 	b.button_down.connect(down_cb)
 	b.button_up.connect(up_cb)
 	parent.add_child(b)
