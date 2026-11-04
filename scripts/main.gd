@@ -129,6 +129,12 @@ func _show(name: String) -> void:
 		ui_layer.visible = (name == "game")
 	if bg_layer != null:
 		bg_layer.visible = (name == "game")
+	# Kamera dunia ikut viewport: kalau tetap aktif saat layar non-game tampil,
+	# layar itu (mis. gameover) ikut tergeser kamera dan tampak blank.
+	if world != null:
+		for ch in world.get_children():
+			if ch is Camera2D:
+				ch.enabled = (name == "game")
 	if name != "game":
 		_left_held = false
 		_right_held = false
