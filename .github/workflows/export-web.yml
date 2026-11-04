@@ -1,0 +1,40 @@
+name: Export Web & Deploy Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unduh font pixel (OFL)
+        run: bash tools/fetch-fonts.sh
+      - name: Unduh Godot 4.3 + export templates
+        run: |
+          mkdir -p /tmp/godot
+          curl -fsSL -o /tmp/godot/godot.zip https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
+          curl -fsSL -o /tmp/godot/templates.tpz https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz
+          unzip -q /tmp/godot/godot.zip -d /tmp/godot
+          mkdir -p ~/.local/share/godot/export_templates/4.3.stable
+          unzip -q /tmp/godot/templates.tpz -d ~/.local/share/godot/export_templates/4.3.stable
+          mv ~/.local/share/godot/export_templates/4.3.stable/templates/* ~/.local/share/godot/export_templates/4.3.stable/
+          chmod +x /tmp/godot/Godot_v4.3-stable_linux.x86_64
+      - name: Ekspor Web (HTML5)
+        run: /tmp/godot/Godot_v4.3-stable_linux.x86_64 --headless --path . --export-release "Web" dist/index.html
+      - name: Unggah artifact Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Deploy ke GitHub Pages
+        uses: actions/deploy-pages@v4
