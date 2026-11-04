@@ -33,13 +33,14 @@ func _ready() -> void:
 	_sprite = Sprite2D.new()
 	_sprite.texture = PixelArt.hero_texture()
 	_sprite.centered = false
-	_sprite.position = Vector2(-20, -64)
+	_sprite.position = Vector2(-30, -96)
+	_sprite.scale = Vector2(1.5, 1.5)
 	add_child(_sprite)
 	var col := CollisionShape2D.new()
 	var shape := RectangleShape2D.new()
-	shape.size = Vector2(36, 60)
+	shape.size = Vector2(54, 90)
 	col.shape = shape
-	col.position = Vector2(0, -32)
+	col.position = Vector2(0, -48)
 	add_child(col)
 
 func queue_touch_jump() -> void:
